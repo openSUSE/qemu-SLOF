@@ -20,6 +20,19 @@
     cas-buffer-size alloc-mem             ( vec memaddr )
     dup 0= IF ." out of memory during ibm,client-architecture-support" cr THEN
     swap over cas-buffer-size             ( memaddr vec memaddr size )
+
+
+
+    ." +_+S+_+" ."  board-qemu/slof/archsupport.fs:" d# __LINE__ .d .s cr
+    fdt-flatten-tree
+    dup hv-update-dt ?dup IF
+        \ Ignore hcall not implemented error, print error otherwise
+        dup -2 <> IF ." HV-UPDATE-DT error: " . cr ELSE drop THEN
+    THEN
+    fdt-flatten-tree-free
+
+
+
     \ make h_call to hypervisor
     hv-cas 0= IF                          ( memaddr )
 	dup l@ 1 >= IF                    \ Version number >= 1
